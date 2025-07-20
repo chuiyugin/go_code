@@ -6,6 +6,23 @@ import (
 	"math"
 )
 
+func intSum2(x ...int) int {
+	fmt.Println(x) //x是一个切片
+	sum := 0
+	for _, v := range x {
+		sum = sum + v
+	}
+	return sum
+}
+
+// 定义全局变量num
+var num int64 = 10
+
+func testNum() {
+	num := 1000
+	fmt.Printf("num=%d\n", num) // 函数中优先使用局部变量
+}
+
 func main() {
 	// 一行代码代表语句结束
 	fmt.Println("hello yugin!")
@@ -37,4 +54,8 @@ func main() {
 	)
 	fmt.Println(a, b, c, d, e, f)
 	fmt.Println(math.MaxFloat64)
+	ret := intSum2(10, 20, 30, 40)
+	fmt.Println(ret)
+	testNum()
+	fmt.Println(num)
 }
