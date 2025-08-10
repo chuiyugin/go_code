@@ -14,6 +14,7 @@ import (
 	"web_app/dao/mysql"
 	"web_app/dao/redis"
 	"web_app/logger"
+	"web_app/pkg/snowflake"
 	"web_app/routes"
 	"web_app/settings"
 
@@ -51,6 +52,14 @@ func main() {
 		return
 	}
 	defer redis.Close()
+
+	// 初始化 snowflake
+	if err := snowflake.Init(viper.GetString("snowflake.startTime"), viper.GetInt64("snowflake.machineID")); err != nil {
+		fmt.Printf("init snowflake failed!, err:%v\n", err)
+		return
+	}
+	// id := snowflake.GenID()
+	// fmt.Println(id)
 
 	// 5.注册路由
 	r := routes.Setup()
