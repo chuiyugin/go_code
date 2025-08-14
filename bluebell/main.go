@@ -3,6 +3,7 @@ package main
 // main.go 117.72.167.29:9090/
 
 import (
+	"bluebell/controllers"
 	"bluebell/dao/mysql"
 	"bluebell/dao/redis"
 	"bluebell/logger"
@@ -60,6 +61,12 @@ func main() {
 	}
 	// id := snowflake.GenID()
 	// fmt.Println(id)
+
+	// 初始化gin框架内置的校验器使用的翻译器
+	if err := controllers.InitTrans("zh"); err != nil {
+		fmt.Printf("init validator failed!, err:%v\n", err)
+		return
+	}
 
 	// 5.注册路由
 	r := routes.Setup()

@@ -19,7 +19,7 @@ import (
 // InitLogger 初始化Logger
 func Init() (err error) {
 	writeSyncer := getLogWriter(
-		viper.GetString("log.feilname"),
+		viper.GetString("log.filename"),
 		viper.GetInt("log.max_size"),
 		viper.GetInt("log.max_backups"),
 		viper.GetInt("log.max_age"))
