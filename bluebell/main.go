@@ -3,6 +3,12 @@ package main
 // main.go 117.72.167.29:9090/
 
 import (
+	"bluebell/dao/mysql"
+	"bluebell/dao/redis"
+	"bluebell/logger"
+	"bluebell/pkg/snowflake"
+	"bluebell/routes"
+	"bluebell/settings"
 	"context"
 	"fmt"
 	"log"
@@ -11,12 +17,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"web_app/dao/mysql"
-	"web_app/dao/redis"
-	"web_app/logger"
-	"web_app/pkg/snowflake"
-	"web_app/routes"
-	"web_app/settings"
 
 	"github.com/spf13/viper"
 	"go.uber.org/zap"

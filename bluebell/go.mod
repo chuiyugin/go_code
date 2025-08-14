@@ -1,4 +1,4 @@
-module web_app
+module bluebell
 
 go 1.24.4
 
@@ -9,7 +9,7 @@ require (
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
-	github.com/redis/go-redis/v9 v9.12.0
+	github.com/redis/go-redis/v9 v9.12.1
 	github.com/spf13/viper v1.20.1
 	go.uber.org/zap v1.27.0
 )
