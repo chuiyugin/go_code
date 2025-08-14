@@ -8,7 +8,7 @@ import (
 
 // 存放业务逻辑代码
 
-func SignUp(p models.ParamSignUP) {
+func SignUp(p *models.ParamSignUP) {
 	// 1.判断用户存不存在
 	mysql.QueryUserByUsername()
 	// 2.生成UID
