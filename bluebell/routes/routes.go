@@ -16,8 +16,11 @@ func Setup() *gin.Engine {
 	// 注册业务逻辑
 	r.POST("/signup", controllers.SignHandler)
 
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "ok")
+	// 登录业务逻辑
+	r.POST("/login", controllers.LoginHandler)
+
+	r.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
 	})
 	return r
 }

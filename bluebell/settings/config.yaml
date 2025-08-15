@@ -9,11 +9,11 @@ log:
   max_age: 30
   max_backups: 7
 mysql:
-  host: "127.0.0.1"
+  host: "117.72.167.29"
   port: 3306
   user: "yugin"
-  password: "1234"
-  dbname: "sql_test"
+  password: "Xyj200208#"
+  dbname: "bluebell"
   max_open_conns: 200
   max_idle_conns: 50
 redis:
