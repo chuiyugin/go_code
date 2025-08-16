@@ -107,3 +107,4 @@
 {"level":"INFO","time":"2025-08-15T22:12:31.285+0800","caller":"logger/logger.go:78","msg":"/posts2","status":404,"method":"GET","path":"/posts2","query":"page=1&order=time","ip":"183.238.0.2","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36","errors":"","cost":0.000000901}
 {"level":"INFO","time":"2025-08-15T22:14:28.422+0800","caller":"bluebell/main.go:95","msg":"Shutdown Server ..."}
 {"level":"INFO","time":"2025-08-15T22:14:28.431+0800","caller":"bluebell/main.go:104","msg":"Server exiting"}
+{"level":"DEBUG","time":"2025-08-16T14:51:49.094+0800","caller":"bluebell/main.go:41","msg":"logger init sucess..."}
