@@ -5,7 +5,6 @@ import (
 	"crypto/md5"
 	"database/sql"
 	"encoding/hex"
-	"errors"
 	"fmt"
 )
 
@@ -13,12 +12,6 @@ import (
 // 把logic层根据业务需求调用
 
 const secret = "yugin"
-
-var (
-	ErrorUserExist       = errors.New("用户已经存在")
-	ErrorUserNotExist    = errors.New("用户不存在")
-	ErrorInvalidPassword = errors.New("用户名或密码错误")
-)
 
 // CheckUsernameExist 检查指定用户名的用户是否存在
 func CheckUsernameExist(username string) (err error) {

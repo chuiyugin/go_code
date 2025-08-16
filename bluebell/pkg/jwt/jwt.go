@@ -7,8 +7,8 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-// 定义过期时间24小时
-const TokenExpireDuration = time.Hour * 24
+// 定义过期时间一年
+const TokenExpireDuration = time.Hour * 24 * 365
 
 // CustomSecret 用于加盐的字符串
 var CustomSecret = []byte("氹氹转菊花园")

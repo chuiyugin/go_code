@@ -14,15 +14,27 @@ func Setup() *gin.Engine {
 	// 使用中间件
 	r.Use(logger.GinLogger(), logger.GinRecovery(true))
 
-	// 注册业务逻辑
-	r.POST("/signup", controllers.SignHandler)
+	v1 := r.Group("/api/v1")
 
-	// 登录业务逻辑
-	r.POST("/login", controllers.LoginHandler)
+	// 注册业务路由
+	v1.POST("/signup", controllers.SignHandler)
 
-	r.GET("/ping", middlewares.JWTAuthMiddleware(), func(c *gin.Context) {
-		// 如果是登录用户，判断请求头中是否有 有效的JWT token
-		c.String(http.StatusOK, "pong")
+	// 登录业务路由
+	v1.POST("/login", controllers.LoginHandler)
+
+	// 应用JWT认证中间件
+	v1.Use(middlewares.JWTAuthMiddleware())
+
+	{
+		v1.GET("/community", controllers.CommunityHandler)
+		v1.GET("/community/:id", controllers.CommunityDetailHandler)
+	}
+
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"msg": "404",
+		})
 	})
+
 	return r
 }
