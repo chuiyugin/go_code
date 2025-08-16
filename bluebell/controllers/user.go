@@ -12,6 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// SignHandler 注册
 func SignHandler(c *gin.Context) {
 	// 1.获取参数和参数校验
 	p := new(models.ParamSignUP)
@@ -52,6 +53,7 @@ func SignHandler(c *gin.Context) {
 	ResponseSuccess(c, nil)
 }
 
+// LoginHandler 登录
 func LoginHandler(c *gin.Context) {
 	// 1.获取请求参数以及参数校验
 	p := new(models.ParamLogin)
@@ -69,7 +71,8 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	// 2.业务逻辑处理
-	if err := logic.Login(p); err != nil {
+	token, err := logic.Login(p)
+	if err != nil {
 		zap.L().Error("logic.Login failed", zap.String("username", p.Username), zap.Error(err)) // 日志
 		if errors.Is(err, mysql.ErrorUserNotExist) {
 			ResponseError(c, CodeUserNotExist)
@@ -79,5 +82,5 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	// 3.返回响应
-	ResponseSuccess(c, nil)
+	ResponseSuccess(c, token)
 }

@@ -1,7 +1,7 @@
 app:
   name: "bluebell"
   mod: "dev"
-  port: 9090
+  port: 8081
 log:
   level: "debug"
   filename: "bluebell.log"
