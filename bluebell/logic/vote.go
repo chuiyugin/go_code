@@ -1,5 +1,38 @@
 package logic
 
-func PostVote() {
+import (
+	"bluebell/dao/redis"
+	"bluebell/models"
+	"strconv"
 
+	"go.uber.org/zap"
+)
+
+// 本项目采用简化版的投票分数
+// 投一票加432分 86400/200 -> 200张赞成票可以给帖子续一天 -> 《redis实战》
+
+/*
+投票的几种情况：
+direction=1时，有两种情况：
+	1、之前没有投过票，现在投赞成票 --> 更新分数和投票记录
+	2、之前投反对票，现在改投赞成票 --> 更新分数和投票记录
+direction=0时，有两种情况：
+	1、之前投过赞成票，现在取消投票 --> 更新分数和投票记录
+	2、之前投反对票，现在取消投票   --> 更新分数和投票记录
+direction=-1时，有两种情况：
+	1、之前没有投过票，现在投反对票 --> 更新分数和投票记录
+	2、之前投赞成票，现在改投反对票 --> 更新分数和投票记录
+投票的限制：
+每个帖子自发表之日起一个星期之内允许用户投票，超过一个星期就不允许再投票了。
+	1、到期之后redis中保存的赞成票数以及反对票数存储到mysql表中
+	2、到期之后删除那个 KeyPostVotedZSetPF
+*/
+
+// VoteforPost 为帖子投票的函数
+func VoteforPost(userID int64, p *models.ParamVoteData) error {
+	zap.L().Debug("VoteforPost",
+		zap.Int64("userID", userID),
+		zap.String("p.PostID", p.PostID),
+		zap.Int8("p.Direction", p.Direction))
+	return redis.VoteforPost(strconv.Itoa(int(userID)), p.PostID, float64(p.Direction))
 }

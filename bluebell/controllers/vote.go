@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 )
 
 // 投票
@@ -23,8 +24,18 @@ func PostVoteController(c *gin.Context) {
 		ResponseErrorWithMsg(c, CodeInvalidParam, errData)
 		return
 	}
-	// 业务逻辑
-	logic.PostVote()
+	// 获取当前请求的用户id
+	userID, err := GetCurrentUserID(c)
+	if err != nil {
+		ResponseError(c, CodeNeedLogin)
+		return
+	}
+	// 业务处理逻辑(投票处理逻辑)
+	if err := logic.VoteforPost(userID, p); err != nil {
+		zap.L().Error("logic.VoteforPost(userID, p) failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
 	// 返回响应
 	ResponseSuccess(c, nil)
 }
