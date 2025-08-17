@@ -33,7 +33,7 @@ func CreatePostHandler(c *gin.Context) {
 	ResponseSuccess(c, nil)
 }
 
-func CreatePostDetailHandler(c *gin.Context) {
+func GetPostDetailHandler(c *gin.Context) {
 	// 1. 获取参数（从URL中获取帖子的id）
 	pidStr := c.Param("id")
 	pid, err := strconv.ParseInt(pidStr, 10, 64) // 将字符串转换为数字，10进制，64位
@@ -49,5 +49,19 @@ func CreatePostDetailHandler(c *gin.Context) {
 		return
 	}
 	// 3. 返回响应
+	ResponseSuccess(c, data)
+}
+
+// GetPostListHandler 获取帖子列表接口的处理函数
+func GetPostListHandler(c *gin.Context) {
+	// 获取分页和数据
+	page, size := getPageInfo(c)
+	data, err := logic.GetPostList(page, size)
+	if err != nil {
+		zap.L().Error("logic.GetPostList() failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 返回响应
 	ResponseSuccess(c, data)
 }

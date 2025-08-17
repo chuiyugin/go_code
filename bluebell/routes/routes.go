@@ -30,7 +30,8 @@ func Setup() *gin.Engine {
 		v1.GET("/community/:id", controllers.CommunityDetailHandler)
 
 		v1.POST("/post", controllers.CreatePostHandler)
-		v1.POST("/post/:id", controllers.CreatePostDetailHandler)
+		v1.GET("/post/:id", controllers.GetPostDetailHandler)
+		v1.GET("/posts", controllers.GetPostListHandler)
 	}
 
 	r.NoRoute(func(c *gin.Context) {
