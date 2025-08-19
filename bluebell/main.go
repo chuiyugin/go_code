@@ -19,6 +19,8 @@ import (
 	"syscall"
 	"time"
 
+	_ "bluebell/docs" // 注意这里要导入 docs，路径要和你的项目一致
+
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )

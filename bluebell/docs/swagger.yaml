@@ -1,0 +1,133 @@
+definitions:
+  controllers._ResponsePostList:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/controllers.ResCode'
+        description: 业务响应状态码
+      data:
+        description: 数据
+        items:
+          $ref: '#/definitions/models.ApiPostDetail'
+        type: array
+      message:
+        description: 提示信息
+        type: string
+    type: object
+  controllers.ResCode:
+    enum:
+    - 1000
+    - 1001
+    - 1002
+    - 1003
+    - 1004
+    - 1005
+    - 1006
+    - 1007
+    format: int64
+    type: integer
+    x-enum-comments:
+      CodeInvalidParam: 1001, 类型是 ResCode
+      CodeInvalidPassword: 1004, 类型是 ResCode
+      CodeServerBusy: 1005, 类型是 ResCode
+      CodeSucess: 1000, 类型是 ResCode
+      CodeUserExist: 1002, 类型是 ResCode
+      CodeUserNotExist: 1003, 类型是 ResCode
+    x-enum-descriptions:
+    - 1000, 类型是 ResCode
+    - 1001, 类型是 ResCode
+    - 1002, 类型是 ResCode
+    - 1003, 类型是 ResCode
+    - 1004, 类型是 ResCode
+    - 1005, 类型是 ResCode
+    - ""
+    - ""
+    x-enum-varnames:
+    - CodeSucess
+    - CodeInvalidParam
+    - CodeUserExist
+    - CodeUserNotExist
+    - CodeInvalidPassword
+    - CodeServerBusy
+    - CodeNeedLogin
+    - CodeInvalidToken
+  models.ApiPostDetail:
+    properties:
+      author_id:
+        type: integer
+      author_name:
+        type: string
+      community:
+        allOf:
+        - $ref: '#/definitions/models.CommunityDetail'
+        description: 嵌入社区信息
+      community_id:
+        type: integer
+      content:
+        type: string
+      create_time:
+        type: string
+      id:
+        example: "0"
+        type: string
+      status:
+        type: integer
+      title:
+        type: string
+      vote_num:
+        type: integer
+    required:
+    - community_id
+    - content
+    - title
+    type: object
+  models.CommunityDetail:
+    properties:
+      create_time:
+        type: string
+      id:
+        type: integer
+      introduction:
+        type: string
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /posts2:
+    get:
+      consumes:
+      - application/json
+      description: 可按社区按时间或分数排序查询帖子列表接口
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 可以为空
+        in: query
+        name: community_id
+        type: integer
+      - in: query
+        name: order
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers._ResponsePostList'
+      security:
+      - ApiKeyAuth: []
+      summary: 升级版帖子列表接口
+      tags:
+      - 帖子相关接口
+swagger: "2.0"
