@@ -17,7 +17,7 @@ import (
 
 func Setup() *gin.Engine {
 	r := gin.New()
-	// 使用中间件（令牌限流）
+	// 使用中间件（令牌桶限流）
 	r.Use(logger.GinLogger(), logger.GinRecovery(true), middlewares.RateLimitMiddleware(2*time.Second, 1))
 
 	r.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
