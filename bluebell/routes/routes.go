@@ -5,20 +5,21 @@ import (
 	"bluebell/logger"
 	"bluebell/middlewares"
 	"net/http"
-	"time"
 
 	_ "bluebell/docs" // 千万不要忘了导入把你上一步生成的docs
 
 	swaggerFiles "github.com/swaggo/files"
 	gs "github.com/swaggo/gin-swagger"
 
+	"github.com/gin-contrib/pprof"
+
 	"github.com/gin-gonic/gin"
 )
 
 func Setup() *gin.Engine {
 	r := gin.New()
-	// 使用中间件（令牌桶限流）
-	r.Use(logger.GinLogger(), logger.GinRecovery(true), middlewares.RateLimitMiddleware(2*time.Second, 1))
+	// 使用中间件
+	r.Use(logger.GinLogger(), logger.GinRecovery(true))
 
 	r.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
 
@@ -32,6 +33,8 @@ func Setup() *gin.Engine {
 
 	// 应用JWT认证中间件
 	v1.Use(middlewares.JWTAuthMiddleware())
+
+	pprof.Register(r) // 注册 pprof 相关路由
 
 	{
 		v1.GET("/community", controllers.CommunityHandler)
