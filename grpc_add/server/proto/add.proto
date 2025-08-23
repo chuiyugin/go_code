@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "server/proto";
+
+// 定义rpc服务
+service CalcService{
+    rpc Add(AddRequest)returns(AddResponse){}
+}
+
+// 定义AddRequest消息
+message AddRequest{
+    int32 x = 1;
+    int32 y = 2;
+}
+
+// 定义AddResponse消息
+message AddResponse{
+    int64 result = 1;
+}
