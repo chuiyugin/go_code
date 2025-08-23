@@ -8,6 +8,15 @@ package pb; // proto 文件模块 （必须与server端一致！）
 service Greeter{
     // 定义方法
     rpc SayHello (HelloRequest) returns (HelloResponse){}
+
+    // 服务端返回流式数据
+    rpc LotsOfReplies(HelloRequest) returns (stream HelloResponse);
+
+    // 客户端发送流式数据
+    rpc LotsOfGreetings(stream HelloRequest) returns (HelloResponse);
+
+    // 双向流式数据
+    rpc BidiHello(stream HelloRequest) returns (stream HelloResponse);
 }
 
 // 定义消息
