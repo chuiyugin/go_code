@@ -22,7 +22,8 @@ import (
 // grpc 客户端
 // 调用server端的 SayHello 方法
 
-var name = flag.String("name", "yugin", "通过-name指定server中的name字段")
+// 指定默认值为 scordingbig
+var name = flag.String("name", "scordingbig", "通过-name指定server中的name字段")
 
 func main() {
 	flag.Parse() // 解析命令行参数
