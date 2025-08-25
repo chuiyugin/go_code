@@ -4,9 +4,18 @@ package proto;
 
 option go_package = "server/proto";
 
+// 导入google/api/annotations.proto
+import "google/api/annotations.proto";
+
 // 定义rpc服务
 service CalcService{
-    rpc Add(AddRequest)returns(AddResponse){}
+    rpc Add(AddRequest)returns(AddResponse){
+        // 这里添加 google.api.http 注释
+        option (google.api.http) = {
+            post: "/v1/example/echo"
+            body: "*"
+        };
+    }
 }
 
 // 定义AddRequest消息
