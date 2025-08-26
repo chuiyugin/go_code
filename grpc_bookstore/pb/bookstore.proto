@@ -120,12 +120,14 @@ message DeleteShelfRequest {
 message ListBooksRequest {
   // ID of the shelf which books to list.
   int64 shelf = 1;
+  string page_token = 2;
 }
 
 // ListBooks 方法的请求消息。
 message ListBooksResponse {
   // 书架上的图书。
   repeated Book books = 1;
+  string next_page_token = 2;
 }
 
 // CreateBook 方法的请求消息。

@@ -339,7 +339,8 @@ func (x *DeleteShelfRequest) GetShelf() int64 {
 type ListBooksRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ID of the shelf which books to list.
-	Shelf         int64 `protobuf:"varint,1,opt,name=shelf,proto3" json:"shelf,omitempty"`
+	Shelf         int64  `protobuf:"varint,1,opt,name=shelf,proto3" json:"shelf,omitempty"`
+	PageToken     string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -381,11 +382,19 @@ func (x *ListBooksRequest) GetShelf() int64 {
 	return 0
 }
 
+func (x *ListBooksRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
 // ListBooks 方法的请求消息。
 type ListBooksResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// 书架上的图书。
 	Books         []*Book `protobuf:"bytes,1,rep,name=books,proto3" json:"books,omitempty"`
+	NextPageToken string  `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -425,6 +434,13 @@ func (x *ListBooksResponse) GetBooks() []*Book {
 		return x.Books
 	}
 	return nil
+}
+
+func (x *ListBooksResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
 }
 
 // CreateBook 方法的请求消息。
@@ -612,11 +628,14 @@ const file_bookstore_proto_rawDesc = "" +
 	"\x0fGetShelfRequest\x12\x14\n" +
 	"\x05shelf\x18\x01 \x01(\x03R\x05shelf\"*\n" +
 	"\x12DeleteShelfRequest\x12\x14\n" +
-	"\x05shelf\x18\x01 \x01(\x03R\x05shelf\"(\n" +
+	"\x05shelf\x18\x01 \x01(\x03R\x05shelf\"G\n" +
 	"\x10ListBooksRequest\x12\x14\n" +
-	"\x05shelf\x18\x01 \x01(\x03R\x05shelf\":\n" +
+	"\x05shelf\x18\x01 \x01(\x03R\x05shelf\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\"b\n" +
 	"\x11ListBooksResponse\x12%\n" +
-	"\x05books\x18\x01 \x03(\v2\x0f.bookstore.BookR\x05books\"N\n" +
+	"\x05books\x18\x01 \x03(\v2\x0f.bookstore.BookR\x05books\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"N\n" +
 	"\x11CreateBookRequest\x12\x14\n" +
 	"\x05shelf\x18\x01 \x01(\x03R\x05shelf\x12#\n" +
 	"\x04book\x18\x02 \x01(\v2\x0f.bookstore.BookR\x04book\":\n" +
