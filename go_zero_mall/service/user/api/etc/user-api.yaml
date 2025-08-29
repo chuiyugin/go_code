@@ -1,5 +1,14 @@
 Name: user-api
 Host: 0.0.0.0
 Port: 8090
+Log:
+  ServiceName: user-srv
+  Mode: console
+  Encoding: json
+  Path: logs
+  level: debug
+  Stat: true
 Mysql:
-  DataSource: root:1234@tcp(127.0.0.1:3306)/mall
+  DataSource: root:1234@tcp(127.0.0.1:3306)/mall?parseTime=true
+CacheRedis:
+ - Host: 127.0.0.1:6379 # - 在yaml文件中表示一个数组（列表）元素
