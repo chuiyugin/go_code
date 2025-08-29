@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"api/internal/svc"
 	"api/internal/types"
@@ -27,6 +28,8 @@ func NewDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DetailLogi
 
 func (l *DetailLogic) Detail(req *types.DetailRequest) (resp *types.DetailResponse, err error) {
 	// todo: add your logic here and delete this line
+	// 获取并打印JWT鉴权的数据
+	fmt.Printf("JWT UserId:%v\n", l.ctx.Value("UserId"))
 	// 1. 拿到请求参数
 	// 2. 根据用户id查数据库
 	u, err := l.svcCtx.UserModel.FindOneByUserId(l.ctx, req.UserID)

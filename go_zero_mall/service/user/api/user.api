@@ -30,7 +30,13 @@ service user-api {
 
 	@handler LoginHandler
 	post /user/login (LoginRequest) returns (LoginResponse)
+}
 
+@server (
+	prefix: api
+	jwt:    Auth // 开启 jwt 认证
+)
+service user-api {
 	@handler DetailHandler
 	get /user/detail (DetailRequest) returns (DetailResponse)
 }
@@ -42,7 +48,10 @@ type LoginRequest {
 }
 
 type LoginResponse {
-	Message string `json:"message"`
+	Message      string `json:"message"`
+	AccessToken  string `json:"accessToken"`
+	AccessExpire int    `json:"accessExpire"`
+	RefreshAfter int    `json:"refreshAfter"`
 }
 
 // 用户详情接口相关

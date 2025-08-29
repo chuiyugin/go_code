@@ -18,7 +18,10 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Message string `json:"message"`
+	Message      string `json:"message"`
+	AccessToken  string `json:"accessToken"`
+	AccessExpire int    `json:"accessExpire"`
+	RefreshAfter int    `json:"refreshAfter"`
 }
 
 type SignupRequest struct {

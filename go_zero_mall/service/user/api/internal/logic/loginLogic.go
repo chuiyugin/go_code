@@ -5,10 +5,12 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"time"
 
 	"api/internal/svc"
 	"api/internal/types"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -49,17 +51,40 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	}
 	if err != nil {
 		logx.Errorw("UserModel.FindOneByUsername failed", logx.Field("err", err))
-		return &types.LoginResponse{
-			Message: "内部错误",
-		}, errors.New("内部错误")
+		return nil, errors.New("内部错误")
 	}
 	if u.Password != passwordMd5([]byte(req.Password)) {
 		return &types.LoginResponse{
 			Message: "用户名或密码错误",
 		}, nil
 	}
+	// 生成JWT
+	now := time.Now().Unix()
+	expire := l.svcCtx.Config.Auth.AccessExpire
+	token, err := getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, expire, u.UserId)
+	if err != nil {
+		logx.Errorw("getJwtToken failed", logx.Field("err", err))
+		return nil, errors.New("内部错误")
+	}
 	// 3. 如果结果一致就登录成功，否则就登录失败
 	return &types.LoginResponse{
-		Message: "登录成功！",
+		Message:      "登录成功！",
+		AccessToken:  token,
+		AccessExpire: int(now + expire),
+		RefreshAfter: int(now + expire/2),
 	}, nil
+}
+
+// @secretKey: JWT 加解密密钥
+// @iat: 时间戳
+// @seconds: 过期时间，单位秒
+// @payload: 数据载体
+func getJwtToken(secretKey string, iat, seconds int64, UserId int64) (string, error) {
+	claims := make(jwt.MapClaims)
+	claims["exp"] = iat + seconds
+	claims["iat"] = iat
+	claims["UserId"] = UserId
+	token := jwt.New(jwt.SigningMethodHS256)
+	token.Claims = claims
+	return token.SignedString([]byte(secretKey))
 }
