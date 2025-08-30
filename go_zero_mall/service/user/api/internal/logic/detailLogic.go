@@ -34,7 +34,7 @@ func (l *DetailLogic) Detail(req *types.DetailRequest) (resp *types.DetailRespon
 	// 2. 根据用户id查数据库
 	u, err := l.svcCtx.UserModel.FindOneByUserId(l.ctx, req.UserID)
 	if err == sqlx.ErrNotFound {
-		return nil, nil
+		return nil, errors.New("细节查询不存在")
 	}
 	if err != nil {
 		logx.Errorw("UserModel.FindOneByUserId failed", logx.Field("err", err))

@@ -4,16 +4,16 @@ import (
 	"flag"
 	"fmt"
 
-	"api/internal/config"
-	"api/internal/handler"
-	"api/internal/middleware"
-	"api/internal/svc"
+	"order/internal/config"
+	"order/internal/handler"
+	"order/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
+	_ "github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 )
 
-var configFile = flag.String("f", "etc/user-api.yaml", "the config file")
+var configFile = flag.String("f", "etc/order-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -21,13 +21,8 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	fmt.Printf("--> conf:%#v\n", c)
-
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
-
-	// 应用全局中间件
-	server.Use(middleware.CopyRes)
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)

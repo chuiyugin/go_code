@@ -2,14 +2,16 @@ package svc
 
 import (
 	"api/internal/config"
+	"api/internal/middleware"
 	"api/model"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/rest"
 )
 
 type ServiceContext struct {
-	Config config.Config
-
+	Config    config.Config
+	Cost      rest.Middleware  // 自定义路由中间件(字段名要与.api文件中的一致)
 	UserModel model.UsersModel // 加入User表增删改查操作
 }
 
@@ -22,5 +24,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:    c,
 		UserModel: model.NewUsersModel(sqlConn, c.CacheRedis),
+		Cost:      middleware.NewCostMiddleware().Handle,
 	}
 }

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user";
+
+message getUserRequest{
+    int64 userID = 1;
+}
+
+message getUserReply{
+    int64 userID = 1;
+    string username = 2;
+    int64 gender = 3;
+}
+
+// 定义一个服务
+service user{
+    // 方法
+    rpc getUser(getUserRequest)returns(getUserReply);
+}

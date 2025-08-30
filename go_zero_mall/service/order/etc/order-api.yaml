@@ -1,0 +1,24 @@
+Name: order-api
+Host: 0.0.0.0
+Port: 8090
+
+UserRPC:
+  # Etcd:
+  #   Hosts:
+  #   - 127.0.0.1:2379
+  #   Key: user.rpc
+  Target: consul://127.0.0.1:8500/consul-user.rpc?wait=14s
+
+Log:
+  ServiceName: user-srv
+  Mode: console
+  Encoding: json
+  Path: logs
+  level: debug
+  Stat: true
+
+Mysql:
+  DataSource: root:1234@tcp(127.0.0.1:3306)/mall?parseTime=true
+
+CacheRedis:
+ - Host: 127.0.0.1:6379 # - 在yaml文件中表示一个数组（列表）元素

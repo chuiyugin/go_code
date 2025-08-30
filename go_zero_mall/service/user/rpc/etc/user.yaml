@@ -1,0 +1,17 @@
+Name: user.rpc
+Mode: dev
+ListenOn: 0.0.0.0:8889
+# Etcd:
+#   Hosts:
+#   - 127.0.0.1:2379
+#   Key: user.rpc
+
+Consul:
+  Host: 127.0.0.1:8500
+  Key: consul-user.rpc
+
+Mysql:
+  DataSource: root:1234@tcp(127.0.0.1:3306)/mall?parseTime=true
+
+CacheRedis:
+ - Host: 127.0.0.1:6379 # - 在yaml文件中表示一个数组（列表）元素

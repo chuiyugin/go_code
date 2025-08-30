@@ -3,8 +3,8 @@ syntax = "v1"
 info (
 	title:   "mall"
 	desc:    "go-zero学习项目"
-	author:  "qimi"
-	email:   "@liwenzhou.com"
+	author:  "yugin"
+	email:   "1726123207@qq.com"
 	version: "1.0"
 )
 
@@ -33,8 +33,9 @@ service user-api {
 }
 
 @server (
-	prefix: api
-	jwt:    Auth // 开启 jwt 认证
+	prefix:     api
+	jwt:        Auth // 开启 jwt 认证
+	middleware: Cost // 通过 middleware 关键字声明中间件，多个中间件以英文逗号分割，如 UserAgentMiddleware,LogMiddleware
 )
 service user-api {
 	@handler DetailHandler
