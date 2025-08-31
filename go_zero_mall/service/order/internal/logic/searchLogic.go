@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"order/internal/errorx"
+	"order/internal/interceptor"
 	"order/internal/svc"
 	"order/internal/types"
 	"order/userclient"
@@ -43,13 +45,15 @@ func (l *SearchLogic) Search(req *types.SearchRequest) (resp *types.SearchRespon
 	}
 	if err != nil {
 		logx.Errorw("OrdersModel.FindOne failed", logx.Field("err", err))
-		return nil, errors.New("内部错误")
+		// return nil, errors.New("内部错误")
+		return nil, errorx.NewDefaultCodeError("内部错误")
 	}
 	// 2.根据订单记录中的 user_id 去查询用户数据（通过RPC调用user服务）
+	l.ctx = context.WithValue(l.ctx, interceptor.CtxKeyAdminID, "33")
 	userResp, err := l.svcCtx.UserRPC.GetUser(l.ctx, &userclient.GetUserRequest{UserID: 1756458293})
 	if err != nil {
 		logx.Errorw("UserRPC.GetUser failed", logx.Field("err", err))
-		return nil, err
+		return nil, errorx.NewDefaultCodeError("内部错误")
 	}
 	// 3.拼接返回结果（这个接口的数据是由多个服务组成的）
 	return &types.SearchResponse{
