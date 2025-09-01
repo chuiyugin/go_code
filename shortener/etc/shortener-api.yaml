@@ -6,3 +6,7 @@ ShortUrlDB:
   DSN: root:1234@tcp(127.0.0.1:3306)/shortener?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 SequenceDB:
   DSN: root:1234@tcp(127.0.0.1:3306)/shortener?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+ShortUrlBlackList: ["version", "fuck", "stupid", "convert", "health", "api", "css", "js"]
+
+ShortDoamin: yugin.cn
