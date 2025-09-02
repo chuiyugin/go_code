@@ -45,28 +45,34 @@ func (l *ConvertLogic) Convert(req *types.ConvertRequest) (resp *types.ConvertRe
 	// 1.3.1 给长链接生成MD5值
 	md5Value := md5.Sum([]byte(req.LongUrl)) // 使用项目中封装的md5
 	// 1.3.2 根据MD5值去数据库中查是否存在（sql.NullString 可空字符串字段）
-	u, err := l.svcCtx.ShortUrlModel.FindOneByMd5(l.ctx, sql.NullString{String: md5Value, Valid: true})
-	if err != sqlx.ErrNotFound {
-		if err != nil {
-			return nil, fmt.Errorf("该链接已经被转为%s", u.Surl.String)
-		}
+	po, err := l.svcCtx.ShortUrlModel.FindOneByMd5(l.ctx, sql.NullString{String: md5Value, Valid: true})
+	// 1) 其他错误
+	if err != nil && err != sqlx.ErrNotFound {
 		logx.Errorw("ShortUrlModel.FindOneByMd5 failed", logx.LogField{Key: "err", Value: err.Error()})
 		return nil, err
 	}
+	// 2) 找到了（说明之前转过）
+	if err == nil && po != nil {
+		return nil, errors.New("该链接已经转成短链了")
+	}
+	// 3) 没找到（ErrNotFound），继续后续逻辑
 	// 1.4 输入的不能是一个短链接（避免循环转链）
 	basePath, err := urltool.GetbasePath(req.LongUrl)
 	if err != nil {
 		logx.Errorw("connect.GetbasePath(req.LongUrl) failed", logx.LogField{Key: "err", Value: err.Error()})
 		return nil, err
 	}
-	u2, err := l.svcCtx.ShortUrlModel.FindOneBySurl(l.ctx, sql.NullString{String: basePath, Valid: true})
-	if err != sqlx.ErrNotFound {
-		if err != nil {
-			return nil, fmt.Errorf("该链接已经是短链接%s", u2.Surl.String)
-		}
+	po2, err := l.svcCtx.ShortUrlModel.FindOneBySurl(l.ctx, sql.NullString{String: basePath, Valid: true})
+	// 1) 其他错误
+	if err != nil && err != sqlx.ErrNotFound {
 		logx.Errorw("ShortUrlModel.FindOneBySurl failed", logx.LogField{Key: "err", Value: err.Error()})
 		return nil, err
 	}
+	// 2) 找到了（说明传入的是本系统短链）
+	if err == nil && po2 != nil {
+		return nil, errors.New("该链接已经是短链了")
+	}
+	// 3) 没找到，继续
 	var short string
 	for {
 		// 2 取号 基于MySQL实现的发号器
