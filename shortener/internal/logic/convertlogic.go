@@ -103,6 +103,11 @@ func (l *ConvertLogic) Convert(req *types.ConvertRequest) (resp *types.ConvertRe
 		logx.Errorw("ShortUrlModel.Insert failed", logx.LogField{Key: "err", Value: err.Error()})
 		return nil, err
 	}
+	// 将生成的布隆过滤器加到布隆过滤器中
+	if err := l.svcCtx.Filter.Add([]byte(short)); err != nil {
+		logx.Errorw("svcCtx.Filter.Add", logx.LogField{Key: "err", Value: err.Error()})
+		return nil, err
+	}
 	// 5 返回响应
 	// 返回的是 短域名+短链接
 	shortUrl := l.svcCtx.Config.ShortDoamin + "/" + short
