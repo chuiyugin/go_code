@@ -44,6 +44,16 @@ api:
 	       --openapi_out=fq_schema_naming=true,default_response=false:. \
 	       $(API_PROTO_FILES)
 
+.PHONY: errors
+
+errors:
+	protoc --proto_path=. \
+         --proto_path=./third_party \
+         --go_out=paths=source_relative:. \
+         --go-errors_out=paths=source_relative:. \
+         $(API_PROTO_FILES)
+
+
 .PHONY: build
 # build
 build:
@@ -61,6 +71,7 @@ all:
 	make api;
 	make config;
 	make generate;
+	make errors;
 
 # show help
 help:

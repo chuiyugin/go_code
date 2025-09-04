@@ -40,8 +40,13 @@ func NewTodoUsecase(repo TodoRepo, logger log.Logger) *TodoUsecase {
 }
 
 // CreateTodo creates a Todo, and returns the new Todo.
-// 对外提供的业务函数
+// 对外提供的业务函数，实现复杂的业务逻辑
 func (uc *TodoUsecase) CreateTodo(ctx context.Context, t *Todo) (*Todo, error) {
 	uc.log.WithContext(ctx).Infof("CreateTodo: %#v", t)
 	return uc.repo.Save(ctx, t) // 调用下一层的Save方法
+}
+
+func (uc *TodoUsecase) Get(ctx context.Context, id int64) (*Todo, error) {
+	uc.log.WithContext(ctx).Infof("Get: %#v", id)
+	return uc.repo.FindByID(ctx, id) // 调用下一层的 FindByID 方法
 }

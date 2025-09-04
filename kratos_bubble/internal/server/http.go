@@ -26,6 +26,13 @@ func NewHTTPServer(c *conf.Server, todo *service.TodoService, logger log.Logger)
 	if c.Http.Timeout != nil {
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
+
+	// 替换默认的HTTP响应编码器
+	opts = append(opts, http.ResponseEncoder(responseEncoder))
+
+	// 替换默认的错误响应编码器
+	opts = append(opts, http.ErrorEncoder(errorEncoder))
+
 	srv := http.NewServer(opts...)
 	v1.RegisterTodoHTTPServer(srv, todo)
 	return srv

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"kratos_bubble/internal/conf"
@@ -73,6 +74,7 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
+	fmt.Printf("bc:%#v\n", bc.Data)
 
 	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
 	if err != nil {

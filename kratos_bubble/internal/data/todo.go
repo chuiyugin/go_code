@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"fmt"
 
 	"kratos_bubble/internal/biz"
 
@@ -23,16 +22,19 @@ func NewTodoRepo(data *Data, logger log.Logger) biz.TodoRepo {
 }
 
 func (r *todoRepo) Save(ctx context.Context, t *biz.Todo) (*biz.Todo, error) {
-	fmt.Printf("save: t: %#v\n", t)
-	return t, nil
+	// gorm 处理数据库
+	err := r.data.db.Create(t).Error
+	return t, err
 }
 
 func (r *todoRepo) Update(ctx context.Context, t *biz.Todo) error {
 	return nil
 }
 
-func (r *todoRepo) FindByID(context.Context, int64) (*biz.Todo, error) {
-	return nil, nil
+func (r *todoRepo) FindByID(ctx context.Context, id int64) (*biz.Todo, error) {
+	t := biz.Todo{ID: id}
+	err := r.data.db.First(&t).Error
+	return &t, err
 }
 
 func (r *todoRepo) Delete(context.Context, int64) error {
