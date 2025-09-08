@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"errors"
-	"fmt"
 	"review-service/internal/biz"
 	"review-service/internal/data/model"
 	"review-service/internal/data/query"
@@ -187,9 +186,7 @@ func (r *reviewRepo) AuditAppeal(ctx context.Context, param *biz.AuditAppealPara
 			return err
 		}
 		// 评价表
-		fmt.Printf("-----> param.Status:%v\n", param.Status)
 		if param.Status == 20 { // 申诉通过则需要隐藏评价
-			fmt.Printf("-----> param.Status:%v\n", param.Status)
 			if _, err := tx.ReviewInfo.WithContext(ctx).
 				Where(tx.ReviewInfo.ReviewID.Eq(param.ReviewID)).
 				Update(tx.ReviewInfo.Status, 40); err != nil {
