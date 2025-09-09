@@ -152,3 +152,9 @@ func (s *ReviewService) ListReviewByUserID(ctx context.Context, req *pb.ListRevi
 	}
 	return &pb.ListReviewByUserIDReply{List: list}, nil
 }
+
+func (s *ReviewService) ListReviewByStoreID(ctx context.Context, req *pb.ListReviewByStoreIDRequest) (*pb.ListReviewByStoreIDReply, error) {
+	fmt.Printf("[service] ListReviewByStoreID req:%#v\n", req)
+	s.uc.ListReviewByStoreID(ctx, req.StoreID, int(req.Page), int(req.Size))
+	return nil, nil
+}

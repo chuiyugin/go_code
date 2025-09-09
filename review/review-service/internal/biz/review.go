@@ -20,6 +20,7 @@ type ReviewRepo interface {
 	AppealReview(context.Context, *AppealParam) (*model.ReviewAppealInfo, error)
 	AuditAppeal(context.Context, *AuditAppealParam) error
 	ListReviewByUserID(ctx context.Context, userID int64, offset, limit int) ([]*model.ReviewInfo, error)
+	ListReviewByStoreID(ctx context.Context, storeID int64, offset, limit int) ([]*model.ReviewInfo, error)
 }
 
 type ReviewUsecase struct {
@@ -112,4 +113,18 @@ func (uc ReviewUsecase) ListReviewByUserID(ctx context.Context, userID int64, pa
 	limit := size
 	uc.log.WithContext(ctx).Debugf("[biz] ListReviewByUserID userID:%v", userID)
 	return uc.repo.ListReviewByUserID(ctx, userID, offset, limit)
+}
+
+// ListReviewByStoreID 根据storeID分页查询评价
+func (uc ReviewUsecase) ListReviewByStoreID(ctx context.Context, storeID int64, page, size int) ([]*model.ReviewInfo, error) {
+	if page <= 0 {
+		page = 1
+	}
+	if size <= 0 || size > 50 {
+		size = 10
+	}
+	offset := (page - 1) * size
+	limit := size
+	uc.log.WithContext(ctx).Debugf("[biz] ListReviewByStoreID storeID:%v", storeID)
+	return uc.repo.ListReviewByStoreID(ctx, storeID, offset, limit)
 }

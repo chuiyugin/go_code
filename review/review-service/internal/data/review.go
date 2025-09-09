@@ -2,12 +2,15 @@ package data
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"review-service/internal/biz"
 	"review-service/internal/data/model"
 	"review-service/internal/data/query"
 	"review-service/pkg/snowflake"
 
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -207,4 +210,31 @@ func (r *reviewRepo) ListReviewByUserID(ctx context.Context, userID int64, offse
 		Limit(limit).
 		Offset(offset).
 		Find()
+}
+
+// ListReviewByStoreID 根据storeID查询所有评价
+func (r *reviewRepo) ListReviewByStoreID(ctx context.Context, storeID int64, offset, limit int) ([]*model.ReviewInfo, error) {
+	// 去ES里面查询
+	resp, err := r.data.es.Search().
+		Index("review").
+		From(offset).
+		Size(limit).
+		Query(&types.Query{
+			Bool: &types.BoolQuery{
+				Filter: []types.Query{
+					{
+						Term: map[string]types.TermQuery{
+							"store_id": {Value: storeID},
+						},
+					},
+				},
+			},
+		}).Do(ctx)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("es result:resp:%v\n", resp.Hits.Total.Value)
+	b, _ := json.Marshal(resp.Hits.Hits)
+	fmt.Printf("es hits:resp:%s\n", b)
+	return nil, nil
 }
