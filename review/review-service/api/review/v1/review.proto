@@ -60,7 +60,11 @@ service Review {
 	}
 
 	// ListReviewByStoreID 根据商家ID查询评价列表（分页）
-	rpc ListReviewByStoreID (ListReviewByStoreIDRequest) returns (ListReviewByStoreIDReply) {}
+	rpc ListReviewByStoreID (ListReviewByStoreIDRequest) returns (ListReviewByStoreIDReply) {
+		option (google.api.http) = {
+			get: "/v1/{storeID}/reviews",
+		};
+	}
 }
 
 message ListReviewByStoreIDRequest{

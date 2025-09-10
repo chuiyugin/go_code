@@ -1189,7 +1189,7 @@ const file_review_v1_review_proto_rawDesc = "" +
 	"\x04page\x18\x02 \x01(\x05B\a\xfaB\x04\x1a\x02 \x00R\x04page\x12\x1b\n" +
 	"\x04size\x18\x03 \x01(\x05B\a\xfaB\x04\x1a\x02 \x00R\x04size\"H\n" +
 	"\x17ListReviewByUserIDReply\x12-\n" +
-	"\x04list\x18\x01 \x03(\v2\x19.api.review.v1.ReviewInfoR\x04list2\x99\a\n" +
+	"\x04list\x18\x01 \x03(\v2\x19.api.review.v1.ReviewInfoR\x04list2\xb7\a\n" +
 	"\x06Review\x12k\n" +
 	"\fCreateReview\x12\".api.review.v1.CreateReviewRequest\x1a .api.review.v1.CreateReviewReply\"\x15\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
 	"/v1/review\x12j\n" +
@@ -1198,8 +1198,8 @@ const file_review_v1_review_proto_rawDesc = "" +
 	"\vReplyReview\x12!.api.review.v1.ReplyReviewRequest\x1a\x1f.api.review.v1.ReplyReviewReply\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/v1/review/reply\x12r\n" +
 	"\fAppealReview\x12\".api.review.v1.AppealReviewRequest\x1a .api.review.v1.AppealReviewReply\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/review/appeal\x12n\n" +
 	"\vAuditAppeal\x12!.api.review.v1.AuditAppealRequest\x1a\x1f.api.review.v1.AuditAppealReply\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/v1/appeal/audit\x12\x84\x01\n" +
-	"\x12ListReviewByUserID\x12(.api.review.v1.ListReviewByUserIDRequest\x1a&.api.review.v1.ListReviewByUserIDReply\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/v1/{userID}/reviews\x12k\n" +
-	"\x13ListReviewByStoreID\x12).api.review.v1.ListReviewByStoreIDRequest\x1a'.api.review.v1.ListReviewByStoreIDReply\"\x00B2\n" +
+	"\x12ListReviewByUserID\x12(.api.review.v1.ListReviewByUserIDRequest\x1a&.api.review.v1.ListReviewByUserIDReply\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/v1/{userID}/reviews\x12\x88\x01\n" +
+	"\x13ListReviewByStoreID\x12).api.review.v1.ListReviewByStoreIDRequest\x1a'.api.review.v1.ListReviewByStoreIDReply\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/{storeID}/reviewsB2\n" +
 	"\rapi.review.v1P\x01Z\x1freview-service/api/review/v1;v1b\x06proto3"
 
 var (

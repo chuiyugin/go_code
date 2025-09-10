@@ -6,6 +6,8 @@ import (
 	v1 "review-service/api/review/v1"
 	"review-service/internal/data/model"
 	"review-service/pkg/snowflake"
+	"strings"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -20,7 +22,7 @@ type ReviewRepo interface {
 	AppealReview(context.Context, *AppealParam) (*model.ReviewAppealInfo, error)
 	AuditAppeal(context.Context, *AuditAppealParam) error
 	ListReviewByUserID(ctx context.Context, userID int64, offset, limit int) ([]*model.ReviewInfo, error)
-	ListReviewByStoreID(ctx context.Context, storeID int64, offset, limit int) ([]*model.ReviewInfo, error)
+	ListReviewByStoreID(ctx context.Context, storeID int64, offset, limit int) ([]*MyReviewInfo, error)
 }
 
 type ReviewUsecase struct {
@@ -33,6 +35,41 @@ func NewReviewUsecase(repo ReviewRepo, logger log.Logger) *ReviewUsecase {
 		repo: repo,
 		log:  log.NewHelper(logger),
 	}
+}
+
+type MyTime time.Time
+
+// 如果 MyReviewInfo 和 ReviewInfo 有相同名字的字段，则外层（MyReviewInfo）的字段会优先匹配。
+type MyReviewInfo struct {
+	*model.ReviewInfo
+	CreateAt     MyTime `json:"create_at"` // 创建时间
+	UpdateAt     MyTime `json:"update_at"` // 更新时间
+	ID           int64  `json:"id,string"`
+	Version      int32  `json:"version,string"` // 乐观锁标记
+	ReviewID     int64  `json:"review_id,string"`
+	Score        int32  `json:"score,string"`         // 评分
+	ServiceScore int32  `json:"service_score,string"` // 商家服务评分
+	ExpressScore int32  `json:"express_score,string"` // 物流评分
+	HasMedia     int32  `json:"has_media,string"`     // 是否有图或视频
+	OrderID      int64  `json:"order_id,string"`      // 订单id
+	SkuID        int64  `json:"sku_id,string"`        // sku id
+	SpuID        int64  `json:"spu_id,string"`        // spu id
+	StoreID      int64  `json:"store_id,string"`      // 店铺id
+	UserID       int64  `json:"user_id,string"`       // 用户id
+	Anonymous    int32  `json:"anonymous,string"`
+	Status       int32  `json:"status,string"`     // 状态:10待审核；20审核通过；30审核不通过；40隐藏
+	IsDefault    int32  `json:"is_default,string"` // 是否默认评价
+	HasReply     int32  `json:"has_reply,string"`  // 是否有商家回复:0无;1有
+}
+
+func (t *MyTime) UnmarshalJSON(data []byte) error {
+	s := strings.Trim(string(data), `"`)
+	tmp, err := time.Parse(time.DateTime, s)
+	if err != nil {
+		return err
+	}
+	*t = MyTime(tmp)
+	return nil
 }
 
 // CreateReview 创建评价
@@ -116,7 +153,7 @@ func (uc ReviewUsecase) ListReviewByUserID(ctx context.Context, userID int64, pa
 }
 
 // ListReviewByStoreID 根据storeID分页查询评价
-func (uc ReviewUsecase) ListReviewByStoreID(ctx context.Context, storeID int64, page, size int) ([]*model.ReviewInfo, error) {
+func (uc ReviewUsecase) ListReviewByStoreID(ctx context.Context, storeID int64, page, size int) ([]*MyReviewInfo, error) {
 	if page <= 0 {
 		page = 1
 	}
