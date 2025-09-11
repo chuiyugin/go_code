@@ -55,14 +55,14 @@ service Review {
 	// C端查看userID下所有评价 
 	rpc ListReviewByUserID (ListReviewByUserIDRequest) returns (ListReviewByUserIDReply) {
 		option (google.api.http) = {
-			get: "/v1/{userID}/reviews",
+			get: "/v1/users/{userID}/reviews",
 		};
 	}
 
 	// ListReviewByStoreID 根据商家ID查询评价列表（分页）
 	rpc ListReviewByStoreID (ListReviewByStoreIDRequest) returns (ListReviewByStoreIDReply) {
 		option (google.api.http) = {
-			get: "/v1/{storeID}/reviews",
+			get: "/v1/stores/{storeID}/reviews",
 		};
 	}
 }

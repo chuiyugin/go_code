@@ -55,8 +55,8 @@ func RegisterReviewHTTPServer(s *http.Server, srv ReviewHTTPServer) {
 	r.POST("/v1/review/reply", _Review_ReplyReview0_HTTP_Handler(srv))
 	r.POST("/v1/review/appeal", _Review_AppealReview0_HTTP_Handler(srv))
 	r.POST("/v1/appeal/audit", _Review_AuditAppeal0_HTTP_Handler(srv))
-	r.GET("/v1/{userID}/reviews", _Review_ListReviewByUserID0_HTTP_Handler(srv))
-	r.GET("/v1/{storeID}/reviews", _Review_ListReviewByStoreID0_HTTP_Handler(srv))
+	r.GET("/v1/users/{userID}/reviews", _Review_ListReviewByUserID0_HTTP_Handler(srv))
+	r.GET("/v1/stores/{storeID}/reviews", _Review_ListReviewByStoreID0_HTTP_Handler(srv))
 }
 
 func _Review_CreateReview0_HTTP_Handler(srv ReviewHTTPServer) func(ctx http.Context) error {
@@ -335,7 +335,7 @@ func (c *ReviewHTTPClientImpl) GetReview(ctx context.Context, in *GetReviewReque
 // ListReviewByStoreID ListReviewByStoreID 根据商家ID查询评价列表（分页）
 func (c *ReviewHTTPClientImpl) ListReviewByStoreID(ctx context.Context, in *ListReviewByStoreIDRequest, opts ...http.CallOption) (*ListReviewByStoreIDReply, error) {
 	var out ListReviewByStoreIDReply
-	pattern := "/v1/{storeID}/reviews"
+	pattern := "/v1/stores/{storeID}/reviews"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationReviewListReviewByStoreID))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -349,7 +349,7 @@ func (c *ReviewHTTPClientImpl) ListReviewByStoreID(ctx context.Context, in *List
 // ListReviewByUserID C端查看userID下所有评价
 func (c *ReviewHTTPClientImpl) ListReviewByUserID(ctx context.Context, in *ListReviewByUserIDRequest, opts ...http.CallOption) (*ListReviewByUserIDReply, error) {
 	var out ListReviewByUserIDReply
-	pattern := "/v1/{userID}/reviews"
+	pattern := "/v1/users/{userID}/reviews"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationReviewListReviewByUserID))
 	opts = append(opts, http.PathTemplate(pattern))
