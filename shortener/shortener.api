@@ -1,7 +1,7 @@
 syntax = "v1"
 
 info (
-	title:   "mall"
+	title:   "shortener"
 	desc:    "shortener"
 	author:  "yugin"
 	email:   "1726123207@qq.com"
@@ -31,6 +31,10 @@ service shortener-api {
 	// 例如:yugin.cn/lycdf
 	@handler ShowHandler
 	get /:shortUrl (ShowRequest) returns (ShowResponse)
+
+	// 使用 RefreshToken 换发新的 AccessToken，并轮换 RefreshToken
+	@handler RefreshHandler
+	post /auth/refresh (RefreshRequest) returns (RefreshResponse)
 }
 
 // 登录相关
@@ -40,10 +44,23 @@ type LoginRequest {
 }
 
 type LoginResponse {
-	Message      string `json:"message"`
-	AccessToken  string `json:"accessToken"`
-	AccessExpire int    `json:"accessExpire"`
-	RefreshAfter int    `json:"refreshAfter"`
+	Message       string `json:"message"`
+	AccessToken   string `json:"accessToken"`
+	AccessExpire  int    `json:"accessExpire"`
+	RefreshAfter  int    `json:"refreshAfter"`
+	RefreshToken  string `json:"refreshToken,omitempty"` // 新增
+	RefreshExpire int    `json:"refreshExpire,omitempty"` // 新增
+}
+
+type RefreshRequest {
+	RefreshToken string `json:"refreshToken" validate:"required"`
+}
+
+type RefreshResponse {
+	AccessToken   string `json:"accessToken"`
+	AccessExpire  int    `json:"accessExpire"`
+	RefreshToken  string `json:"refreshToken"`
+	RefreshExpire int    `json:"refreshExpire"`
 }
 
 // 短链接项目

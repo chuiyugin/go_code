@@ -1,16 +1,17 @@
 package logic
 
 import (
-	"context"
-	"crypto/md5"
-	"encoding/hex"
 	"errors"
 	"time"
+
+	"context"
 
 	"shortener/internal/svc"
 	"shortener/internal/types"
 
-	"github.com/golang-jwt/jwt/v4"
+	"shortener/internal/pkg/auth" // 上面两个文件所在包
+
+	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -29,62 +30,64 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 	}
 }
 
-func passwordMd5(password []byte) string {
-
-	h := md5.New()
-	h.Write(password) // 密码计算md5
-	h.Write(secret)
-	PasswordStr := hex.EncodeToString(h.Sum(nil))
-	return PasswordStr
-}
-
 func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, err error) {
-	// todo: add your logic here and delete this line
-	// 实现登录功能
-	// 1. 处理用户发来的请求，拿到用户名和密码
-	// 2. 判断输入的用户名和密码跟数据库中的是否一致
 	u, err := l.svcCtx.UsersModel.FindOneByUsername(l.ctx, req.Username)
 	if err == sqlx.ErrNotFound {
-		return &types.LoginResponse{
-			Message: "用户名不存在",
-		}, nil
+		return &types.LoginResponse{Message: "用户名不存在"}, nil
 	}
 	if err != nil {
-		logx.Errorw("UserModel.FindOneByUsername failed", logx.Field("err", err))
+		l.Errorf("FindOneByUsername error: %v", err)
 		return nil, errors.New("内部错误")
 	}
 	if u.Password != passwordMd5([]byte(req.Password)) {
-		return &types.LoginResponse{
-			Message: "用户名或密码错误",
-		}, nil
+		return &types.LoginResponse{Message: "用户名或密码错误"}, nil
 	}
-	// 生成JWT
+
 	now := time.Now().Unix()
-	expire := l.svcCtx.Config.Auth.AccessExpire
-	token, err := getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, expire, u.UserId)
+
+	// 1) Access Token
+	at, err := auth.GetJwtTokenWithClaims(
+		l.svcCtx.Config.Auth.AccessSecret,
+		now,
+		l.svcCtx.Config.Auth.AccessExpire,
+		u.UserId,
+		"access",
+		"",
+	)
 	if err != nil {
-		logx.Errorw("getJwtToken failed", logx.Field("err", err))
+		l.Errorf("getJwtToken(access) error: %v", err)
 		return nil, errors.New("内部错误")
 	}
-	// 3. 如果结果一致就登录成功，否则就登录失败
-	return &types.LoginResponse{
-		Message:      "登录成功！",
-		AccessToken:  token,
-		AccessExpire: int(now + expire),
-		RefreshAfter: int(now + expire/2),
-	}, nil
-}
+	atExp := int(now + l.svcCtx.Config.Auth.AccessExpire)
 
-// @secretKey: JWT 加解密密钥
-// @iat: 时间戳
-// @seconds: 过期时间，单位秒
-// @payload: 数据载体
-func getJwtToken(secretKey string, iat, seconds int64, UserId int64) (string, error) {
-	claims := make(jwt.MapClaims)
-	claims["exp"] = iat + seconds
-	claims["iat"] = iat
-	claims["UserId"] = UserId
-	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims = claims
-	return token.SignedString([]byte(secretKey))
+	// 2) Refresh Token（带 jti）
+	jti := uuid.NewString()
+	rt, err := auth.GetJwtTokenWithClaims(
+		l.svcCtx.Config.Auth.RefreshSecret,
+		now,
+		l.svcCtx.Config.Auth.RefreshExpire,
+		u.UserId,
+		"refresh",
+		jti,
+	)
+	if err != nil {
+		l.Errorf("getJwtToken(refresh) error: %v", err)
+		return nil, errors.New("内部错误")
+	}
+	rtExp := int(now + l.svcCtx.Config.Auth.RefreshExpire)
+
+	// 3) 将 RT 写入白名单
+	if err := auth.RTAllow(l.svcCtx.Rds, u.UserId, jti, l.svcCtx.Config.Auth.RefreshExpire); err != nil {
+		l.Errorf("RTAllow error: %v", err)
+		return nil, errors.New("内部错误")
+	}
+
+	return &types.LoginResponse{
+		Message:       "登录成功！",
+		AccessToken:   at,
+		AccessExpire:  atExp,
+		RefreshToken:  rt,    // 新增字段
+		RefreshExpire: rtExp, // 新增字段
+		RefreshAfter:  int(now + l.svcCtx.Config.Auth.AccessExpire/2),
+	}, nil
 }

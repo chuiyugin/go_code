@@ -21,6 +21,8 @@ type ServiceContext struct {
 
 	// 布隆过滤器
 	Filter *bloom.Filter
+
+	Rds *redis.Redis // 新增：给 token/会话使用
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -47,5 +49,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ShortUrlBlackList: m, // 短链接黑名单map
 
 		Filter: filter,
+
+		Rds: redis.MustNewRedis(c.Redis),
 	}
 }

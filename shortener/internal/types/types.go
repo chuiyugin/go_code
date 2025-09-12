@@ -17,10 +17,23 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Message      string `json:"message"`
-	AccessToken  string `json:"accessToken"`
-	AccessExpire int    `json:"accessExpire"`
-	RefreshAfter int    `json:"refreshAfter"`
+	Message       string `json:"message"`
+	AccessToken   string `json:"accessToken"`
+	AccessExpire  int    `json:"accessExpire"`
+	RefreshAfter  int    `json:"refreshAfter"`
+	RefreshToken  string `json:"refreshToken,omitempty"`  // 新增
+	RefreshExpire int    `json:"refreshExpire,omitempty"` // 新增
+}
+
+type RefreshRequest struct {
+	RefreshToken string `json:"refreshToken" validate:"required"`
+}
+
+type RefreshResponse struct {
+	AccessToken   string `json:"accessToken"`
+	AccessExpire  int    `json:"accessExpire"`
+	RefreshToken  string `json:"refreshToken"`
+	RefreshExpire int    `json:"refreshExpire"`
 }
 
 type ShowRequest struct {

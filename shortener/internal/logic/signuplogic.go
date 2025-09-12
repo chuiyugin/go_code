@@ -31,6 +31,15 @@ func NewSignupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SignupLogi
 	}
 }
 
+func passwordMd5(password []byte) string {
+
+	h := md5.New()
+	h.Write(password) // 密码计算md5
+	h.Write(secret)
+	PasswordStr := hex.EncodeToString(h.Sum(nil))
+	return PasswordStr
+}
+
 func (l *SignupLogic) Signup(req *types.SignupRequest) (resp *types.SignupResponse, err error) {
 	// todo: add your logic here and delete this line
 	// fmt.Printf("req:%#v\n", req)

@@ -13,7 +13,11 @@ ShortDoamin: http://103.236.68.40:9090
 
 CacheRedis:
  - Host: 127.0.0.1:6379 # - 在yaml文件中表示一个数组（列表）元素
+Redis:
+  Host: 127.0.0.1:6379
 
 Auth:
   AccessSecret: 氹氹转菊花园
   AccessExpire: 3600
+  RefreshSecret: 炒米饼糯米圆
+  RefreshExpire: 2592000       # 30 days
