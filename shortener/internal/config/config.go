@@ -21,4 +21,9 @@ type Config struct {
 	ShortDoamin string
 
 	CacheRedis cache.CacheConf // redis缓存
+
+	Auth struct { // JWT 认证需要的密钥和过期时间配置
+		AccessSecret string
+		AccessExpire int64
+	}
 }

@@ -1,3 +1,51 @@
+syntax = "v1"
+
+info (
+	title:   "mall"
+	desc:    "shortener"
+	author:  "yugin"
+	email:   "1726123207@qq.com"
+	version: "1.0"
+)
+
+// 定义类型
+// 注册相关
+type SignupRequest {
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+	RePassword string `json:"re_password"`
+	Gender     int    `json:"gender,options=0|1|2,default=0"`
+}
+
+type SignupResponse {
+	Message string `json:"message"`
+}
+
+service shortener-api {
+	@handler SignupHandler
+	post /user/signup (SignupRequest) returns (SignupResponse)
+
+	@handler LoginHandler
+	post /user/login (LoginRequest) returns (LoginResponse)
+
+	// 例如:yugin.cn/lycdf
+	@handler ShowHandler
+	get /:shortUrl (ShowRequest) returns (ShowResponse)
+}
+
+// 登录相关
+type LoginRequest {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResponse {
+	Message      string `json:"message"`
+	AccessToken  string `json:"accessToken"`
+	AccessExpire int    `json:"accessExpire"`
+	RefreshAfter int    `json:"refreshAfter"`
+}
+
 // 短链接项目
 type ConvertRequest {
 	LongUrl string `json:"longUrl" validate:"required"`
@@ -15,12 +63,11 @@ type ShowResponse {
 	LongUrl string `json:"longUrl"`
 }
 
+@server (
+	jwt: Auth // 开启 jwt 认证
+)
 service shortener-api {
 	@handler ConvertHandler
 	post /convert (ConvertRequest) returns (ConvertResponse)
-
-	// 例如:yugin.cn/lycdf
-	@handler ShowHandler
-	get /:shortUrl (ShowRequest) returns (ShowResponse)
 }
 

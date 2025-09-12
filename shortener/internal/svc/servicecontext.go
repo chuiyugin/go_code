@@ -13,6 +13,7 @@ import (
 type ServiceContext struct {
 	Config        config.Config
 	ShortUrlModel model.ShortUrlMapModel
+	UsersModel    model.UsersModel // users表
 
 	Sequence sequence.Sequence
 
@@ -39,6 +40,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:        c,
 		ShortUrlModel: model.NewShortUrlMapModel(conn, c.CacheRedis),
+		UsersModel:    model.NewUsersModel(conn),
 
 		Sequence: sequence.NewMySQL(c.SequenceDB.DSN),
 

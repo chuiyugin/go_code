@@ -11,10 +11,33 @@ type ConvertResponse struct {
 	ShortUrl string `json:"shortUrl"`
 }
 
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	Message      string `json:"message"`
+	AccessToken  string `json:"accessToken"`
+	AccessExpire int    `json:"accessExpire"`
+	RefreshAfter int    `json:"refreshAfter"`
+}
+
 type ShowRequest struct {
 	ShortUrl string `path:"shortUrl" validate:"required"`
 }
 
 type ShowResponse struct {
 	LongUrl string `json:"longUrl"`
+}
+
+type SignupRequest struct {
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+	RePassword string `json:"re_password"`
+	Gender     int    `json:"gender,options=0|1|2,default=0"`
+}
+
+type SignupResponse struct {
+	Message string `json:"message"`
 }
