@@ -3,3 +3,6 @@ mysql:
     mysql -h 127.0.0.1 -P 3306 -uroot -p1234
 redis:
     redis-cli -h 127.0.0.1 -p 6379
+docker:
+    docker run --name review-service -d -p 8482:8482 -p 9492:9492 -v /home/yugin/Code/go_code/review/review-service/configs:/data/conf review-service:1.0
+    docker build -t review-service:1.0 .

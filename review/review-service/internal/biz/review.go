@@ -162,6 +162,6 @@ func (uc ReviewUsecase) ListReviewByStoreID(ctx context.Context, storeID int64, 
 	}
 	offset := (page - 1) * size
 	limit := size
-	uc.log.WithContext(ctx).Debugf("[biz] ListReviewByStoreID storeID:%v", storeID)
+	// uc.log.WithContext(ctx).Debugf("[biz] ListReviewByStoreID storeID:%v", storeID)
 	return uc.repo.ListReviewByStoreID(ctx, storeID, offset, limit)
 }

@@ -120,7 +120,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.review.v1.GetReviewReply'
-    /v1/{storeID}/reviews:
+    /v1/stores/{storeID}/reviews:
         get:
             tags:
                 - Review
@@ -149,7 +149,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.review.v1.ListReviewByStoreIDReply'
-    /v1/{userID}/reviews:
+    /v1/users/{userID}/reviews:
         get:
             tags:
                 - Review

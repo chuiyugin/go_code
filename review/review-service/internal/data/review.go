@@ -265,7 +265,7 @@ func (r *reviewRepo) getData2(ctx context.Context, storeID int64, offset, limit 
 	// 取数据
 	// 先查询Redis缓存
 	// 缓存没有则查询ES
-	// 通过singleflight 合并短时间内大量的并发查询
+	// 通过 singleflight 合并短时间内大量的并发查询
 	key := fmt.Sprintf("review:%d:%d:%d", storeID, offset, limit)
 	b, err := r.getDataBySingleflight(ctx, key)
 	if err != nil {
@@ -289,10 +289,10 @@ func (r *reviewRepo) getData2(ctx context.Context, storeID int64, offset, limit 
 }
 
 func (r *reviewRepo) getDataBySingleflight(ctx context.Context, key string) ([]byte, error) {
-	v, err, shared := g.Do(key, func() (interface{}, error) {
+	v, err, _ := g.Do(key, func() (interface{}, error) {
 		// 查缓存
 		data, err := r.getDataFromCache(ctx, key)
-		r.log.Debugf("r.getDataFromCache(ctx, key) data:%s, err:%v\n", data, err)
+		// r.log.Debugf("r.getDataFromCache(ctx, key) data:%s, err:%v\n", data, err)
 		if err == nil {
 			return data, nil
 		}
@@ -300,7 +300,7 @@ func (r *reviewRepo) getDataBySingleflight(ctx context.Context, key string) ([]b
 		if errors.Is(err, redis.Nil) {
 			// 缓存中没有这个key，说明缓存失效了，需要查ES
 			data, err := r.getDataFromES(ctx, key)
-			r.log.Debugf("r.getDataFromES data:%#v\n", data)
+			// r.log.Debugf("r.getDataFromES data:%#v\n", data)
 			if err == nil {
 				// 设置缓存
 				return data, r.setCache(ctx, key, data)
@@ -310,7 +310,7 @@ func (r *reviewRepo) getDataBySingleflight(ctx context.Context, key string) ([]b
 		// 查缓存失败，直接返回错误
 		return nil, err
 	})
-	r.log.Debugf("singleflight ret: v:%v err:%v shared:%v\n", v, err, shared)
+	// r.log.Debugf("singleflight ret: v:%v err:%v shared:%v\n", v, err, shared)
 	if err != nil {
 		return nil, err
 	}
@@ -319,7 +319,7 @@ func (r *reviewRepo) getDataBySingleflight(ctx context.Context, key string) ([]b
 
 // getDataFromCache 读缓存
 func (r *reviewRepo) getDataFromCache(ctx context.Context, key string) ([]byte, error) {
-	r.log.Debugf("getDataFromCache key:%v\n", key)
+	// r.log.Debugf("getDataFromCache key:%v\n", key)
 	return r.data.rdb.Get(ctx, key).Bytes()
 }
 
@@ -331,7 +331,7 @@ func (r *reviewRepo) setCache(ctx context.Context, key string, data []byte) erro
 // getDataFromES 从ES中查询
 func (r *reviewRepo) getDataFromES(ctx context.Context, key string) ([]byte, error) {
 	values := strings.Split(key, ":")
-	r.log.Debugf("getDataFromES values:%#v\n", values)
+	// r.log.Debugf("getDataFromES values:%#v\n", values)
 	if len(values) < 4 {
 		return nil, errors.New("invalid key")
 	}
@@ -363,6 +363,6 @@ func (r *reviewRepo) getDataFromES(ctx context.Context, key string) ([]byte, err
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("es result:resp:%v\n", resp.Hits.Total.Value)
+	// fmt.Printf("es result:resp:%v\n", resp.Hits.Total.Value)
 	return json.Marshal(resp.Hits)
 }
